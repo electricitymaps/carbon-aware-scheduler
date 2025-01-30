@@ -1,11 +1,15 @@
 from google.cloud import pubsub_v1
 from src.lib.task import CarbonAwareTask
 from json import loads
+import os
 
-def read_new_carbon_aware_tasks(project_id, subscription_id) -> list[CarbonAwareTask]:
+PROJECT_ID =  os.environ["GCP_PROJECT_ID"]
+SUBSCRIPTION_ID = os.environ["CARBON_AWARE_PUBSUB_SUBSCRIPTION"]
+
+def read_new_carbon_aware_tasks() -> list[CarbonAwareTask]:
     """Reads new CarbonAwareTasks from a Pub/Sub subscription."""
     subscriber = pubsub_v1.SubscriberClient()
-    subscription_path = subscriber.subscription_path(project_id, subscription_id)
+    subscription_path = subscriber.subscription_path(PROJECT_ID, SUBSCRIPTION_ID)
 
     NUM_MESSAGES = 100
     new_tasks = []

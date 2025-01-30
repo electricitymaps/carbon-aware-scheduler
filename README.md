@@ -21,6 +21,7 @@ First export the following environment variables:
 ```bash
 export CARBON_AWARE_TASK_BUCKET=<your gcp bucket>
 export CARBON_AWARE_PUBSUB_SUBSCRIPTION=<your gcp pubsub subscription>
+export GCP_PROJECT_ID=<your gcp project id>
 ```
 
 ## Building and deploying
