@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "carbon-aware-scheduler"
+name = "src"
 version = "0.1.0"
 description = "A carbon aware scheduler based on Electricity Maps's forecasts."
 authors = ["ElectricityMaps"]
@@ -10,6 +10,9 @@ python = "^3.10"
 google-cloud-pubsub = "^2.27.3"
 google-cloud-storage = "^3.0.0"
 openapi-client = {path = "./carbon-aware-api-client", develop = true}
+
+[tool.poetry.scripts]
+carbon-aware-scheduler = "src.job:run"
 
 
 [build-system]
