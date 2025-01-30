@@ -8,3 +8,7 @@ class CarbonAwareTask:
     estimated_duration: timedelta
     max_wait_time: timedelta
     ingestion_time: datetime
+
+    def execute(self):
+        """Executes the task."""
+        raise NotImplementedError()
