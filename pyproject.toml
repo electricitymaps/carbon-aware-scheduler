@@ -8,6 +8,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.10"
 google-cloud-pubsub = "^2.27.3"
+openapi-client = {path = "./carbon-aware-api-client", develop = true}
 
 
 [build-system]
