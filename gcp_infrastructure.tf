@@ -42,7 +42,7 @@ resource "google_pubsub_subscription" "carbon_aware_tasks_to_schedule_subscripti
   message_retention_duration = "7200s"
   retain_acked_messages      = false
 
-  ack_deadline_seconds = 20
+  ack_deadline_seconds = 60
 
   expiration_policy {
     ttl = ""
