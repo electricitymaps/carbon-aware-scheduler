@@ -30,3 +30,26 @@ resource "google_pubsub_topic" "carbon_aware_tasks_to_schedule" {
 
   message_retention_duration = "7200s"
 }
+
+resource "google_pubsub_subscription" "carbon_aware_tasks_to_schedule_subscription" {
+  name  = "carbon-aware-tasks-to-schedule-subscription"
+  topic = google_pubsub_topic.carbon_aware_tasks_to_schedule.id
+  labels = {
+    usage = "carbon-aware-scheduler"
+  }
+
+  # 20 minutes
+  message_retention_duration = "7200s"
+  retain_acked_messages      = false
+
+  ack_deadline_seconds = 20
+
+  expiration_policy {
+    ttl = ""
+  }
+  retry_policy {
+    minimum_backoff = "10s"
+  }
+
+  enable_message_ordering    = true
+}
