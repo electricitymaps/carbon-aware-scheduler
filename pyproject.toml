@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "carbon-aware-scheduler"
+name = "src"
 version = "0.1.0"
 description = "A carbon aware scheduler based on Electricity Maps's forecasts."
 authors = ["ElectricityMaps"]

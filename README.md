@@ -22,3 +22,10 @@ First export the following environment variables:
 export CARBON_AWARE_TASK_BUCKET=<your gcp bucket>
 export CARBON_AWARE_PUBSUB_SUBSCRIPTION=<your gcp pubsub subscription>
 ```
+
+## Building and deploying
+
+We wrote a simple dockerfile to build the image and an earthfile to push it to the registry.
+```bash
+earthly --platform=linux/amd64 --push +build --REGISTRY_REPOSITORY=<your gcp registry repository>
+```
