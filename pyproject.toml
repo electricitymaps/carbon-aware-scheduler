@@ -11,6 +11,9 @@ google-cloud-pubsub = "^2.27.3"
 google-cloud-storage = "^3.0.0"
 openapi-client = {path = "./carbon-aware-api-client", develop = true}
 
+[tool.poetry.scripts]
+carbon-aware-scheduler = "src.job:run"
+
 
 [build-system]
 requires = ["poetry-core"]
