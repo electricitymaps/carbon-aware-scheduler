@@ -22,24 +22,26 @@ def determine_optimal_execution_time(task: CarbonAwareTask) -> datetime:
             #     print(e.to_str())
         except ApiException as e:
             print("Exception when calling CarbonAwareApi: %s\n" % e)
-    # Find the optimal time based on emissions (lowest emissions value)
-    optimal_time = None
-    min_emissions = float('inf')
 
-    forecast_data = api_response[0].forecast_data
+        forecast_data = api_response[0]
+        optimal_time = None
 
-    for data_point in forecast_data:
+    # Convert task.ingestion_time to a timezone-aware datetime - otherwise comparison fails
+    task_ingestion_time = task.ingestion_time.replace(tzinfo=timezone.utc)
 
-        task_ingestion_time = task.ingestion_time.replace(tzinfo=timezone.utc)
+    # Iterate through optimal data points (directly available from forecast_data)
+    for data_point in forecast_data.optimal_data_points:
+        # Ensure task_end_time is also timezone-aware
         task_end_time = (task.ingestion_time + task.max_wait_time).replace(tzinfo=timezone.utc)
 
+        # Check if the data point is within the task's window (task.ingestion_time to task_end_time)
         if task_ingestion_time <= data_point.timestamp <= task_end_time:
-            if data_point.value < min_emissions:
-                min_emissions = data_point.value
-                optimal_time = data_point.timestamp
+            optimal_time = data_point.timestamp
+            break  # We can break after finding the first valid data point
 
     if optimal_time is None:
         raise ValueError("No optimal execution time found.")
+
 
     return optimal_time
 
