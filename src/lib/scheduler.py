@@ -4,13 +4,15 @@ import openapi_client
 from openapi_client.rest import ApiException
 
 
+HOST = "http://localhost:5073"
+CONFIGURATION = openapi_client.Configuration(
+    host = HOST,
+)
+
 def determine_optimal_execution_time(task: CarbonAwareTask) -> datetime:
     """Determines the optimal time to execute a CarbonAwareTask using the carbon aware sdk."""
 
-    configuration = openapi_client.Configuration(
-    host = "http://localhost:5073",
-    )
-    with openapi_client.ApiClient(configuration) as api_client:
+    with openapi_client.ApiClient(CONFIGURATION) as api_client:
         # Create an instance of the API class
         api_instance = openapi_client.CarbonAwareApi(api_client)
 
@@ -54,11 +56,19 @@ def determine_now_execution(tasks: list[CarbonAwareTask]) -> list[CarbonAwareTas
     executable_tasks = []
 
     for task in tasks:
-        optimal_time = determine_optimal_execution_time(task)
+        try:
+            # Try to get the optimal execution time for the task
+            optimal_time = determine_optimal_execution_time(task)
 
-        # Check if the optimal execution time is within the current hour
-        if now <= optimal_time < (now + timedelta(hours=1)):
-            executable_tasks.append(task)
+            # Check if the optimal execution time is within the current hour
+            if now <= optimal_time < (now + timedelta(hours=1)):
+                executable_tasks.append(task)
+
+        except ValueError as e:
+            # Handle the case where no optimal time is found
+            print(f"Warning: No optimal execution time found for task {task.execution_path}. Skipping task.")
+            # Optionally, log the error or take other actions if needed
+
 
     return executable_tasks
 
