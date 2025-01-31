@@ -4,7 +4,7 @@ import openapi_client
 from openapi_client.rest import ApiException
 
 
-HOST = "http://localhost:5073"
+HOST = "https://carbon-aware-sdk-api-808362706826.europe-west1.run.app"
 CONFIGURATION = openapi_client.Configuration(
     host = HOST,
 )
@@ -19,27 +19,16 @@ def determine_optimal_execution_time(task: CarbonAwareTask) -> datetime:
         try:
             api_response = api_instance.get_current_forecast_data(
                 location=['belgium'],
+                data_start_at=task.ingestion_time,
+                data_end_at=task.ingestion_time + task.max_wait_time,
+                window_size = int(task.estimated_duration.total_seconds()),
             )
-            # for e in api_response:
-            #     print(e.to_str())
+
         except ApiException as e:
-            print("Exception when calling CarbonAwareApi: %s\n" % e)
+            raise Exception("Exception when calling CarbonAwareApi: %s\n" % e)
 
         forecast_data = api_response[0]
-        optimal_time = None
-
-    # Convert task.ingestion_time to a timezone-aware datetime - otherwise comparison fails
-    task_ingestion_time = task.ingestion_time.replace(tzinfo=timezone.utc)
-
-    # Iterate through optimal data points (directly available from forecast_data)
-    for data_point in forecast_data.optimal_data_points:
-        # Ensure task_end_time is also timezone-aware
-        task_end_time = (task.ingestion_time + task.max_wait_time).replace(tzinfo=timezone.utc)
-
-        # Check if the data point is within the task's window (task.ingestion_time to task_end_time)
-        if task_ingestion_time <= data_point.timestamp <= task_end_time:
-            optimal_time = data_point.timestamp
-            break  # We can break after finding the first valid data point
+        optimal_time = forecast_data.optimal_data_points[0].timestamp
 
     if optimal_time is None:
         raise ValueError("No optimal execution time found.")
