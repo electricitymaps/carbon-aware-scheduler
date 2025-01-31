@@ -2,6 +2,8 @@ from google.cloud import pubsub_v1
 from src.lib.task import CarbonAwareTask
 from json import loads
 import os
+from zoneinfo import ZoneInfo
+from datetime import datetime
 
 PROJECT_ID =  os.environ["GCP_PROJECT_ID"]
 SUBSCRIPTION_ID = os.environ["CARBON_AWARE_PUBSUB_SUBSCRIPTION"]
@@ -23,7 +25,7 @@ def read_new_carbon_aware_tasks() -> list[CarbonAwareTask]:
 
         ack_ids = []
         for received_message in response.received_messages:
-            new_tasks.append(CarbonAwareTask(**loads(received_message.message.data)))
+            new_tasks.append(CarbonAwareTask(**loads(received_message.message.data), ingestion_time=datetime.fromtimestamp(received_message.message.publish_time.timestamp())))
             ack_ids.append(received_message.ack_id)
 
         # Acknowledges the received messages so they will not be sent again.

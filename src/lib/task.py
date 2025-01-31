@@ -11,4 +11,4 @@ class CarbonAwareTask:
 
     def execute(self):
         """Executes the task."""
-        raise NotImplementedError()
+        print(f"Executing task {self.execution_path} in region {self.execution_region}.")

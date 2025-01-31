@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta, timezone
-from lib.task import CarbonAwareTask
+from src.lib.task import CarbonAwareTask
 import openapi_client
 from openapi_client.rest import ApiException
 
