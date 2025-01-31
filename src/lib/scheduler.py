@@ -21,7 +21,7 @@ def determine_optimal_execution_time(task: CarbonAwareTask) -> datetime:
                 location=['belgium'],
                 data_start_at=task.ingestion_time,
                 data_end_at=task.ingestion_time + task.max_wait_time,
-                window_size = int(task.estimated_duration.total_seconds()),
+                window_size = int(task.estimated_duration.total_seconds() / 60),
             )
 
         except ApiException as e:
